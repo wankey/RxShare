@@ -1,9 +1,9 @@
  [![Download](https://api.bintray.com/packages/wankey/maven/share/images/download.svg) ](https://bintray.com/wankey/maven/share/_latestVersion)
 
-#RxShare
+# RxShare
 使用RxJava代码风格的分享lib，支持分享到新浪微博、qq、qq空间、微信、微信朋友圈
 
-##使用方式
+## 使用方式
 1. 添加repository<br>
 maven { url "https://dl.bintray.com/wankey/maven/" }<br>
 //如需支持分享到新浪微博，请添加(option)<br>
