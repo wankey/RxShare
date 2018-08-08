@@ -1,0 +1,102 @@
+import com.android.build.gradle.internal.tasks.AndroidTestTask
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+  ext.kotlin_version = '1.2.60'
+  repositories {
+    google()
+    jcenter()
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:3.3.0-alpha05'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    classpath 'eu.davidea:grabver:1.0.0'
+    classpath "com.github.ben-manes:gradle-versions-plugin:0.20.0"
+    // NOTE: Do not place your application dependencies here; they belong
+    // in the individual module build.gradle files
+  }
+}
+
+allprojects {
+  ext {
+    // Author
+    developerId = "wankey"
+    developerName = "Wankey Cheng"
+    developerEmail = "wankeycheng@gmail.com"
+
+    // Library Repository
+    bintrayRepo = "maven"
+    packageExt = "aar"
+    publishedGroupId = "io.github.wankey.mithril"
+    siteUrl = "https://github.com/wankey/RxShare"
+    gitUrl = "https://github.com/wankey/RxShare.git"
+
+    // License stuff
+    licenseName = "The Apache Software License, Version 2.0"
+    licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    licenseDist = "repo"
+    allLicenses = ["Apache-2.0"]
+  }
+
+  repositories {
+    google()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+    maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+    maven { url "https://dl.bintray.com/wankey/maven/" }
+  }
+
+  apply plugin: 'com.github.ben-manes.versions'
+
+  // Workaround to prevent Gradle from stealing focus from other apps during tests run/etc.
+  // https://gist.github.com/artem-zinnatullin/4c250e04636e25797165
+  tasks.withType(JavaForkOptions) {
+    jvmArgs '-Djava.awt.headless=true'
+  }
+}
+
+tasks.withType(Javadoc) {
+  //兼容中文字符
+  options {
+    encoding "UTF-8"
+    charSet 'UTF-8'
+    links "http://docs.oracle.com/javase/7/docs/api"
+    String packageListRef = "${android.sdkDirectory}/docs/reference/"
+    linksOffline 'http://d.android.com/reference/', packageListRef
+  }
+}
+
+task clean(type: Delete) {
+  delete rootProject.buildDir
+}
+ext.preDexLibs = !project.hasProperty('disablePreDex')
+
+subprojects {
+  apply plugin: 'eu.davidea.grabver'
+
+  tasks.withType(Javadoc) {
+    enabled = false
+  }
+
+  afterEvaluate {
+
+    dependencyUpdates.resolutionStrategy = {
+      componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+          boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier -> selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+          }
+          if (rejected) {
+            selection.reject('Release candidate')
+          }
+        }
+      }
+    }
+
+    dependencyUpdates.setOutputDir("${projectDir}/build/reports/versions")
+  }
+}

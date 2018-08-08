@@ -1,0 +1,64 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+versioning {
+  // required (number)
+  major = 1
+  minor = 1
+  // force patch, optional (number)
+  patch = 0
+  dependsOn = "install"
+  // optional (any string)
+  preRelease = 'SNAPSHOT'
+}
+
+ext {
+  // Library Settings
+  libraryDescription = "a rx stream library provider ability to share text、image、web to popular social media in China"
+  libraryLabels = ['android', 'share', 'wechat', 'qq', 'weibo', 'rxjava', 'kotlin']
+  bintrayName = "share"
+  libraryName = bintrayName
+  artifact = bintrayName
+}
+
+android {
+  compileSdkVersion 28
+
+  defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 28
+    versionCode versioning.code
+    versionName versioning.name
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      consumerProguardFiles 'proguard-rules.pro'
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+dependencies {
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+  implementation "com.squareup.okhttp3:okhttp:3.11.0"
+  implementation "io.reactivex.rxjava2:rxjava:2.2.0"
+  implementation 'top.zibin:Luban:1.1.8'
+
+  compileOnly fileTree(include: ['*.jar'], dir: 'libs')
+  compileOnly 'com.sina.weibo.sdk:core:4.2.9:openDefaultRelease@aar'
+  compileOnly 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
+}
+
+apply from: '../script/maven-install.gradle'
+apply from: '../script/maven-publish.gradle'
+apply from: '../script/jfrog-bintray-publish.gradle'
