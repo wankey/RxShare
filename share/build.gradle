@@ -6,7 +6,7 @@ versioning {
   major = 1
   minor = 1
   // force patch, optional (number)
-  patch = 0
+  patch = 1
   dependsOn = "install"
   // optional (any string)
   preRelease = 'SNAPSHOT'
