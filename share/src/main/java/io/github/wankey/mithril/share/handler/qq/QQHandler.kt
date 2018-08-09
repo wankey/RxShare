@@ -8,12 +8,13 @@ import com.tencent.connect.share.QzoneShare
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import io.github.wankey.mithril.share.AuthResult
 import io.github.wankey.mithril.share.R
+import io.github.wankey.mithril.share.R.string
 import io.github.wankey.mithril.share.config.SocialConfig
 import io.github.wankey.mithril.share.config.SocialMedia
 import io.github.wankey.mithril.share.handler.AuthHandler
 import io.github.wankey.mithril.share.handler.ShareHandler
+import io.github.wankey.mithril.share.model.AuthResult
 import io.github.wankey.mithril.share.model.ShareImage
 import io.github.wankey.mithril.share.model.ShareModel
 import io.github.wankey.mithril.share.model.ShareResult
@@ -41,20 +42,20 @@ import java.util.HashMap
  */
 class QQHandler(activity: Activity) : ShareHandler(activity), AuthHandler {
 
-  private var client: Tencent = Tencent.createInstance(SocialConfig.instance.qqId, activity.applicationContext)
+  private var client: Tencent = Tencent.createInstance(SocialConfig.qqId, activity.applicationContext)
 
   private val shareListener: IUiListener = object : IUiListener {
     override fun onComplete(p0: Any?) {
-      BusUtils.default.post(ShareResult("分享成功"))
+      BusUtils.default.post(ShareResult(ShareResult.OK, "分享成功"))
     }
 
     override fun onCancel() {
-      BusUtils.default.post(ShareResult("取消分享"))
+      BusUtils.default.post(ShareResult(ShareResult.CANCEL, "取消分享"))
     }
 
     override fun onError(p0: UiError?) = when {
-      p0?.errorMessage != null -> BusUtils.default.post(ShareResult(p0.errorMessage))
-      else -> BusUtils.default.post(ShareResult("分享失败"))
+      p0?.errorMessage != null -> BusUtils.default.post(ShareResult(ShareResult.ERROR, p0.errorMessage))
+      else -> BusUtils.default.post(ShareResult(ShareResult.ERROR, "分享失败"))
     }
 
   }
@@ -65,16 +66,16 @@ class QQHandler(activity: Activity) : ShareHandler(activity), AuthHandler {
       val authData = HashMap<String, String>()
       authData["openid"] = obj.getString("openid")
       authData["access_token"] = obj.getString("access_token")
-      BusUtils.default.post(AuthResult(AuthResult.OK, activity.getString(R.string.action_login_success), authData))
+      BusUtils.default.post(AuthResult(AuthResult.OK, activity.getString(string.action_login_success), authData))
     }
 
     override fun onCancel() {
-      BusUtils.default.post(AuthResult(AuthResult.CANCEL, activity.getString(R.string.action_login_cancel)))
+      BusUtils.default.post(AuthResult(AuthResult.CANCEL, activity.getString(string.action_login_cancel)))
     }
 
     override fun onError(p0: UiError?) = when {
       p0?.errorMessage != null -> BusUtils.default.post(AuthResult(AuthResult.ERROR, p0.errorMessage))
-      else -> BusUtils.default.post(AuthResult(AuthResult.ERROR, activity.getString(R.string.action_login_failure)))
+      else -> BusUtils.default.post(AuthResult(AuthResult.ERROR, activity.getString(string.action_login_failure)))
     }
   }
 
@@ -88,13 +89,13 @@ class QQHandler(activity: Activity) : ShareHandler(activity), AuthHandler {
 
   override fun share(target: SocialMedia, model: ShareModel) {
     if (!isInstall()) {
-      BusUtils.default.post(ShareResult(activity.getString(R.string.msg_qq_client_not_found)))
+      BusUtils.default.post(ShareResult(ShareResult.ERROR, activity.getString(R.string.msg_qq_client_not_found)))
       activity.finish()
       return
     }
 
     if (model is ShareText) {
-      BusUtils.default.post(ShareResult(activity.getString(R.string.msg_share_text_to_qq_not_support)))
+      BusUtils.default.post(ShareResult(ShareResult.ERROR, activity.getString(R.string.msg_share_text_to_qq_not_support)))
       activity.finish()
       return
     }

@@ -6,6 +6,7 @@ import io.github.wankey.mithril.share.config.SocialMedia
 import io.github.wankey.mithril.share.handler.AuthHandler
 import io.github.wankey.mithril.share.handler.qq.QQHandler
 import io.github.wankey.mithril.share.handler.wechat.WechatHandler
+import io.github.wankey.mithril.share.model.AuthResult
 import io.github.wankey.mithril.share.util.BusUtils
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
@@ -31,9 +32,9 @@ class RxAuth {
                 return@create
             }
             activity.startActivity(ShareActivity.createIntent(activity, ShareActivity.TYPE_LOGIN))
-            BusUtils.default.doSubscribe(AuthResult::class.java, next = Consumer {
+            BusUtils.default.doSubscribe(AuthResult::class.java, Consumer {
                 emitter.onNext(it)
-            }, error = Consumer {
+            }, Consumer {
                 emitter.onError(it)
                 emitter.onComplete()
             })

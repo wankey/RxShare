@@ -1,4 +1,4 @@
-package io.github.wankey.mithril.share
+package io.github.wankey.mithril.share.model
 
 /**
  *

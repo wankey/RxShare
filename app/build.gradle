@@ -3,33 +3,56 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+def env = { System.getenv it }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.2"
-    defaultConfig {
+  compileSdkVersion 28
+
+  defaultConfig {
         applicationId "io.github.wankey.mithril.demo.share"
-        minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    minSdkVersion 14
+    targetSdkVersion 28
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    manifestPlaceholders = ["TENCENT_SCHEME": "tencent123456"]
+  }
+
+  signingConfigs {
+    sign {
+      storeFile file(env("ANDROID_STORE_FILE_DJ"))
+      storePassword env("ANDROID_STORE_PASSWORD_DJ")
+      keyAlias env("ANDROID_KEY_ALIAS_DJ")
+      keyPassword env("ANDROID_KEY_PASSWORD_DJ")
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+  }
+
+  buildTypes {
+    debug {
+      signingConfig signingConfigs.sign
     }
+
+    release {
+      minifyEnabled false
+      signingConfig signingConfigs.sign
+
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+  implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+  implementation 'com.google.android.material:material:1.0.0-beta01'
+  testImplementation 'junit:junit:4.12'
+  androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+  androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+  implementation "io.reactivex.rxjava2:rxjava:2.2.0"
+
+  implementation 'com.sina.weibo.sdk:core:4.2.9:openDefaultRelease@aar'
+  implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
+  implementation project(":share")
 }

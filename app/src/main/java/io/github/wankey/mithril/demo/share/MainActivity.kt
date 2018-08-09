@@ -1,12 +1,25 @@
 package io.github.wankey.mithril.demo.share
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.Menu
-import android.view.MenuItem
-
-import kotlinx.android.synthetic.main.activity_main.*
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.PermissionChecker
+import io.github.wankey.mithril.share.RxShare
+import io.github.wankey.mithril.share.config.SocialMedia.QQ
+import io.github.wankey.mithril.share.config.SocialMedia.QZONE
+import io.github.wankey.mithril.share.config.SocialMedia.WECHAT
+import io.github.wankey.mithril.share.config.SocialMedia.WECHAT_MOMENT
+import io.github.wankey.mithril.share.config.SocialMedia.WEIBO
+import io.github.wankey.mithril.share.model.ShareImage
+import io.github.wankey.mithril.share.model.ShareModel
+import io.github.wankey.mithril.share.model.ShareText
+import io.github.wankey.mithril.share.model.ShareWeb
+import kotlinx.android.synthetic.main.activity_main.fab
+import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.content_main.rg_media
+import kotlinx.android.synthetic.main.content_main.rg_source
+import kotlinx.android.synthetic.main.content_main.rg_type
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,25 +28,56 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
     setSupportActionBar(toolbar)
 
-    fab.setOnClickListener { view ->
-      Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-          .setAction("Action", null).show()
+    fab.setOnClickListener {
+      val result = PermissionChecker.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+      if (result == PermissionChecker.PERMISSION_GRANTED) {
+        share()
+      }
+    }
+
+    rg_type.setOnCheckedChangeListener { _, id ->
+      run {
+        when (id) {
+          R.id.rb_image -> {
+            rg_source.visibility = View.VISIBLE
+          }
+          else -> {
+            rg_source.visibility = View.GONE
+          }
+        }
+      }
+    }
+
+  }
+
+  private fun share() {
+    val model = prepareModel()
+    val result = when (rg_media.checkedRadioButtonId) {
+      R.id.rb_wx -> RxShare.instance.share(this, WECHAT, model)
+      R.id.rb_circle -> RxShare.instance.share(this, WECHAT_MOMENT, model)
+      R.id.rb_qq -> RxShare.instance.share(this, QQ, model)
+      R.id.rb_qzone -> RxShare.instance.share(this, QZONE, model)
+      R.id.rb_wb -> RxShare.instance.share(this, WEIBO, model)
+      else -> null
+    }
+    val disponse = result?.subscribe(
+        { Toast.makeText(this, it.msg, Toast.LENGTH_SHORT).show() },
+        { Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show() })
+  }
+
+  private fun prepareModel(): ShareModel = when (rg_type.checkedRadioButtonId) {
+    R.id.rb_text -> ShareText("这是一条纯文本分享")
+    R.id.rb_image -> prepareImage(false)
+    R.id.rb_web -> ShareWeb("RxShare", "使用RxJava代码风格的分享lib，支持分享到新浪微博、qq、qq空间、微信、微信朋友圈", "https://github.com/wankey/RxShare", prepareImage(true))
+    else -> ShareText("这是一条纯文本分享")
+  }
+
+  private fun prepareImage(isThumb: Boolean): ShareImage {
+    return if (!isThumb) {
+      ShareImage("http://g.hiphotos.baidu.com/image/pic/item/0df3d7ca7bcb0a468c3807fd6763f6246a60afd8.jpg", isThumb)
+    } else {
+      ShareImage(R.drawable.ic_launcher, isThumb)
     }
   }
 
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    menuInflater.inflate(R.menu.menu_main, menu)
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    return when (item.itemId) {
-      R.id.action_settings -> true
-      else -> super.onOptionsItemSelected(item)
-    }
-  }
 }

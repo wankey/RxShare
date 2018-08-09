@@ -25,45 +25,48 @@ import io.reactivex.functions.Consumer
  */
 class RxShare {
 
-    private lateinit var target: SocialMedia
-    private lateinit var model: ShareModel
-    private lateinit var handler: ShareHandler
+  private lateinit var target: SocialMedia
+  private lateinit var model: ShareModel
+  private lateinit var handler: ShareHandler
 
-    fun share(activity: Activity, target: SocialMedia, model: ShareModel): Observable<String> {
-        this.target = target
-        this.model = model
-        return Observable.create<String> { emitter: ObservableEmitter<String> ->
-            if (emitter.isDisposed) {
-                return@create
-            }
-            activity.startActivity(ShareActivity.createIntent(activity, ShareActivity.TYPE_SHARE))
-            BusUtils.default.doSubscribe(ShareResult::class.java, next = Consumer {
-                emitter.onNext(it.result)
-            }, error = Consumer {
-                emitter.onError(it)
-                emitter.onComplete()
-            })
-        }
+  fun share(activity: Activity, target: SocialMedia, model: ShareModel): Observable<ShareResult> {
+    this.target = target
+    this.model = model
+    return Observable.create<ShareResult> { emitter: ObservableEmitter<ShareResult> ->
+      if (emitter.isDisposed) {
+        return@create
+      }
+      activity.startActivity(ShareActivity.createIntent(activity, ShareActivity.TYPE_SHARE))
 
-    }
-
-    fun action(activity: Activity) {
-        handler = when (target) {
-            SocialMedia.QQ, SocialMedia.QZONE -> QQHandler(activity)
-            SocialMedia.WECHAT, SocialMedia.WECHAT_MOMENT -> WechatHandler(activity)
-            SocialMedia.WEIBO -> WeiboHandler(activity)
-            SocialMedia.DEFAULT -> DefaultHandler(activity)
-        }
-        handler.share(target, model)
-    }
-
-    fun handleResult(data: Intent?) {
-        handler.handleResult(data)
+      BusUtils.default
+          .doSubscribe(ShareResult::class.java, Consumer {
+            emitter.onNext(it)
+          }, Consumer {
+            emitter.onError(it)
+            emitter.onComplete()
+          })
 
     }
 
-    companion object {
-        val instance: RxShare by lazy { RxShare() }
+  }
 
+  fun action(activity: Activity) {
+    handler = when (target) {
+      SocialMedia.QQ, SocialMedia.QZONE -> QQHandler(activity)
+      SocialMedia.WECHAT, SocialMedia.WECHAT_MOMENT -> WechatHandler(activity)
+      SocialMedia.WEIBO -> WeiboHandler(activity)
+      SocialMedia.DEFAULT -> DefaultHandler(activity)
     }
+    handler.share(target, model)
+  }
+
+  fun handleResult(data: Intent?) {
+    handler.handleResult(data)
+
+  }
+
+  companion object {
+    val instance: RxShare by lazy { RxShare() }
+
+  }
 }
