@@ -6,7 +6,7 @@ versioning {
   major = 1
   minor = 1
   // force patch, optional (number)
-  patch = 1
+  patch = 2
   dependsOn = "install"
   // optional (any string)
   preRelease = 'SNAPSHOT'
@@ -60,6 +60,6 @@ dependencies {
   compileOnly 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
 }
 
-apply from: '../script/maven-install.gradle'
-apply from: '../script/maven-publish.gradle'
-apply from: '../script/jfrog-bintray-publish.gradle'
+apply from: 'https://raw.githubusercontent.com/wankey/Script/master/maven-install.gradle'
+apply from: 'https://raw.githubusercontent.com/wankey/Script/master/maven-publish.gradle'
+apply from: 'https://raw.githubusercontent.com/wankey/Script/master/jfrog-bintray-publish.gradle'
