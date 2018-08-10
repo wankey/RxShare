@@ -9,7 +9,7 @@ versioning {
   patch = 2
   dependsOn = "install"
   // optional (any string)
-  preRelease = 'SNAPSHOT'
+  //preRelease = 'SNAPSHOT'
 }
 
 ext {
