@@ -14,7 +14,7 @@ import com.sina.weibo.sdk.statistic.LogBuilder.KEY_TYPE
  * create on 2018/7/24
  *
  */
-class ShareActivity : Activity() {
+class SocialActivity : Activity() {
     private val KEY_TYPE = "type"
     private var isNew: Boolean = false
     private var fromUser: Boolean = false
@@ -25,7 +25,7 @@ class ShareActivity : Activity() {
         const val TYPE_SHARE = "share"
         const val TYPE_LOGIN = "login"
         fun createIntent(context: Context, type: String): Intent {
-            val intent = Intent(context, ShareActivity::class.java)
+            val intent = Intent(context, SocialActivity::class.java)
             intent.putExtra(KEY_TYPE, type)
             intent.putExtra(KEY_IS_FROM_USER, true)
             return intent
@@ -76,9 +76,9 @@ class ShareActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
         if (type == TYPE_SHARE) {
-            RxShare.instance.handleResult(intent)
+            RxShare.instance.handleResult(data)
         } else {
-            RxAuth.INSTANCE.handleResult(intent)
+            RxAuth.INSTANCE.handleResult(data)
         }
         finish()
     }

@@ -17,7 +17,7 @@ interface AuthHandler {
 
     fun login(target: SocialMedia)
 
-    fun handleResult(data: Intent?)
+    fun handleLoginResult(data: Intent?)
 
     fun release()
 

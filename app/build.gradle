@@ -4,17 +4,28 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+
 android {
   compileSdkVersion 28
+  Properties properties = new Properties()
+  properties.load project.rootProject.file('local.properties').newDataInputStream()
+  def APP_ID = properties.getProperty("APP_ID")
+  def WB_ID = properties.getProperty("WB_ID")
+  def WX_ID = properties.getProperty("WX_ID")
+  def QQ_ID = properties.getProperty("QQ_ID")
 
   defaultConfig {
-        applicationId "io.github.wankey.mithril.demo.share"
     minSdkVersion 14
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    manifestPlaceholders = ["TENCENT_SCHEME": "tencent123456"]
+
+    applicationId APP_ID
+    buildConfigField("String", "WEIBO_ID", "\"${WB_ID}\"")
+    buildConfigField("String", "WX_ID", "\"${WX_ID}\"")
+    buildConfigField("String", "QQ_ID", "\"${QQ_ID}\"")
+    manifestPlaceholders = ["TENCENT_SCHEME": "tencent${QQ_ID}"]
   }
 
   signingConfigs {

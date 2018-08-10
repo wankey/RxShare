@@ -31,7 +31,7 @@ class RxAuth {
             if (emitter.isDisposed) {
                 return@create
             }
-            activity.startActivity(ShareActivity.createIntent(activity, ShareActivity.TYPE_LOGIN))
+            activity.startActivity(SocialActivity.createIntent(activity, SocialActivity.TYPE_LOGIN))
             BusUtils.default.doSubscribe(AuthResult::class.java, Consumer {
                 emitter.onNext(it)
             }, Consumer {
@@ -51,7 +51,7 @@ class RxAuth {
     }
 
     fun handleResult(data: Intent?) {
-        handler.handleResult(data)
+        handler.handleLoginResult(data)
     }
 
     companion object {

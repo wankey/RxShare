@@ -105,7 +105,7 @@ class WeiboHandler(activity: Activity) : ShareHandler(activity) {
         .subscribeOn(Schedulers.io())
   }
 
-  override fun handleResult(data: Intent?) {
+  override fun handleShareResult(data: Intent?) {
     api.doResultIntent(data, object : WbShareCallback {
       override fun onWbShareSuccess() {
         BusUtils.default.post(ShareResult(ShareResult.OK, activity.getString(R.string.action_share_success)))

@@ -7,137 +7,37 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
+    tools:context="io.github.wankey.mithril.demo.MainActivity"
     tools:showIn="@layout/activity_main"
     >
 
-  <TextView
+  <Button
+      android:onClick="shareKotlin"
+      android:text="分享（kotlin）"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:gravity="center"
-      android:text="分享类型"
       />
 
-  <RadioGroup
-      android:id="@+id/rg_type"
+  <Button
+      android:enabled="false"
+      android:onClick="shareJava"
       android:layout_width="match_parent"
+      android:text="分享（Java）"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      >
-    <RadioButton
-        android:id="@+id/rb_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="纯文本"
-        />
-
-    <RadioButton
-        android:id="@+id/rb_image"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="图片"
-        />
-
-    <RadioButton
-        android:id="@+id/rb_web"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="网页"
-        />
-  </RadioGroup>
-  <LinearLayout
-      android:id="@+id/ll_img"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:visibility="gone"
-      tools:visibility="visible"
-      >
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="图片来源"
-        />
-
-    <RadioGroup
-        android:id="@+id/rg_source"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-      <RadioButton
-          android:id="@+id/rb_network"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:text="网络"
-          />
-
-      <RadioButton
-          android:id="@+id/rb_local_file"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:text="本地文件"
-          />
-
-    </RadioGroup>
-  </LinearLayout>
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"
-      android:text="分享渠道"
       />
 
-  <RadioGroup
-      android:id="@+id/rg_media"
+  <Button
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      >
-    <RadioButton
-        android:id="@+id/rb_wx"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="微信"
-        />
+      android:onClick="loginKotlin"
+      android:text="登录（kotlin）"
+      />
 
-    <RadioButton
-        android:id="@+id/rb_circle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="朋友圈"
-        />
-
-    <RadioButton
-        android:id="@+id/rb_qq"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="qq"
-        />
-
-    <RadioButton
-        android:id="@+id/rb_qzone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="qq空间"
-        />
-
-    <RadioButton
-        android:id="@+id/rb_wb"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="微博"
-        />
-  </RadioGroup>
+  <Button
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:enabled="false"
+      android:onClick="loginJava"
+      android:text="登录（Java）"
+      />
 </LinearLayout>

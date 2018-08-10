@@ -35,7 +35,7 @@ abstract class ShareHandler(val activity: Activity) {
 
   abstract fun share(target: SocialMedia, model: ShareModel)
 
-  abstract fun handleResult(data: Intent?)
+  abstract fun handleShareResult(data: Intent?)
 
   abstract fun release()
 

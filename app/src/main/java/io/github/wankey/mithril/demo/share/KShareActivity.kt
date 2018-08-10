@@ -1,9 +1,9 @@
 package io.github.wankey.mithril.demo.share
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PermissionChecker
 import io.github.wankey.mithril.share.RxShare
 import io.github.wankey.mithril.share.config.SocialMedia.QQ
@@ -15,20 +15,22 @@ import io.github.wankey.mithril.share.model.ShareImage
 import io.github.wankey.mithril.share.model.ShareModel
 import io.github.wankey.mithril.share.model.ShareText
 import io.github.wankey.mithril.share.model.ShareWeb
-import kotlinx.android.synthetic.main.activity_main.fab
-import kotlinx.android.synthetic.main.activity_main.toolbar
-import kotlinx.android.synthetic.main.content_main.rg_media
-import kotlinx.android.synthetic.main.content_main.rg_source
-import kotlinx.android.synthetic.main.content_main.rg_type
+import kotlinx.android.synthetic.main.activity_share.btn_share
+import kotlinx.android.synthetic.main.activity_share.rg_media
+import kotlinx.android.synthetic.main.activity_share.rg_source
+import kotlinx.android.synthetic.main.activity_share.rg_type
 
-class MainActivity : AppCompatActivity() {
+/**
+ * @author wankey
+ */
+class KShareActivity : Activity() {
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
-    setSupportActionBar(toolbar)
+    setContentView(R.layout.activity_share)
 
-    fab.setOnClickListener {
+    btn_share.setOnClickListener {
       val result = PermissionChecker.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
       if (result == PermissionChecker.PERMISSION_GRANTED) {
         share()

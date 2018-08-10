@@ -21,7 +21,7 @@ class DefaultHandler(activity: Activity) : ShareHandler(activity) {
     override fun share(target: SocialMedia, model: ShareModel) {
     }
 
-    override fun handleResult(data: Intent?) {
+  override fun handleShareResult(data: Intent?) {
     }
 
     override fun release() {

@@ -64,8 +64,9 @@ class QQHandler(activity: Activity) : ShareHandler(activity), AuthHandler {
     override fun onComplete(p0: Any?) {
       val obj = p0 as JSONObject
       val authData = HashMap<String, String>()
-      authData["openid"] = obj.getString("openid")
-      authData["access_token"] = obj.getString("access_token")
+      for (k in obj.keys()) {
+        authData[k] = obj.getString(k)
+      }
       BusUtils.default.post(AuthResult(AuthResult.OK, activity.getString(string.action_login_success), authData))
     }
 
@@ -170,8 +171,12 @@ class QQHandler(activity: Activity) : ShareHandler(activity), AuthHandler {
         }.observeOn(Schedulers.io())
   }
 
-  override fun handleResult(data: Intent?) {
+  override fun handleShareResult(data: Intent?) {
     Tencent.handleResultData(data, shareListener)
+  }
+
+  override fun handleLoginResult(data: Intent?) {
+    Tencent.handleResultData(data, loginListener)
   }
 
   override fun release() {

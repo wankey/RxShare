@@ -16,7 +16,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
-            android:name=".ShareActivity"
+            android:name=".SocialActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:launchMode="singleInstance"
@@ -26,6 +26,6 @@
       <activity-alias
           android:name="${applicationId}.wxapi.WXEntryActivity"
           android:exported="true"
-          android:targetActivity=".ShareActivity"/>
+          android:targetActivity=".SocialActivity"/>
     </application>
 </manifest>

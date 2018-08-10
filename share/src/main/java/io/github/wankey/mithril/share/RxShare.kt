@@ -36,7 +36,7 @@ class RxShare {
       if (emitter.isDisposed) {
         return@create
       }
-      activity.startActivity(ShareActivity.createIntent(activity, ShareActivity.TYPE_SHARE))
+      activity.startActivity(SocialActivity.createIntent(activity, SocialActivity.TYPE_SHARE))
 
       BusUtils.default
           .doSubscribe(ShareResult::class.java, Consumer {
@@ -61,12 +61,11 @@ class RxShare {
   }
 
   fun handleResult(data: Intent?) {
-    handler.handleResult(data)
+    handler.handleShareResult(data)
 
   }
 
   companion object {
     val instance: RxShare by lazy { RxShare() }
-
   }
 }

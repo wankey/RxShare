@@ -42,7 +42,6 @@ import java.io.File
  */
 class WechatHandler(activity: Activity) : ShareHandler(activity), AuthHandler {
 
-
   private var api: IWXAPI = WXAPIFactory.createWXAPI(activity, SocialConfig.wxId, true)
 
   init {
@@ -83,34 +82,45 @@ class WechatHandler(activity: Activity) : ShareHandler(activity), AuthHandler {
     }
   }
 
-  override fun handleResult(data: Intent?) {
+  override fun handleLoginResult(data: Intent?) {
+    api.handleIntent(data, object : IWXAPIEventHandler {
+      override fun onResp(baseResp: BaseResp) {
+        val result = when (baseResp.errCode) {
+          BaseResp.ErrCode.ERR_OK -> {
+            val authData = HashMap<String, String>()
+            val sendResp = baseResp as SendAuth.Resp
+
+            authData["code"] = sendResp.code
+            authData["country"] = sendResp.country
+            authData["lang"] = sendResp.lang
+            authData["state"] = sendResp.state
+            authData["url"] = sendResp.url
+
+            AuthResult(AuthResult.OK, activity.getString(string.action_login_success), authData)
+          }
+          BaseResp.ErrCode.ERR_USER_CANCEL -> AuthResult(AuthResult.CANCEL,
+              activity.getString(string.action_login_cancel))
+          else -> AuthResult(AuthResult.ERROR, baseResp.errStr + ",code:" + baseResp.errCode)
+        }
+        BusUtils.default.post(result)
+      }
+
+      override fun onReq(baseResp: BaseReq) {
+      }
+    })
+  }
+
+  override fun handleShareResult(data: Intent?) {
     api.handleIntent(data, object : IWXAPIEventHandler {
       override fun onReq(baseReq: BaseReq) {}
 
       override fun onResp(baseResp: BaseResp) {
-        when (baseResp.type) {
-          1 -> {
-            val result = when (baseResp.errCode) {
-              BaseResp.ErrCode.ERR_OK -> {
-                val authData = HashMap<String, String>()
-                authData["openid"] = (baseResp as SendAuth.Resp).code
-                AuthResult(AuthResult.OK, activity.getString(string.action_login_success), authData)
-              }
-              BaseResp.ErrCode.ERR_USER_CANCEL -> AuthResult(AuthResult.CANCEL,
-                  activity.getString(string.action_login_cancel))
-              else -> AuthResult(AuthResult.ERROR, baseResp.errStr + ",code:" + baseResp.errCode)
-            }
-            BusUtils.default.post(result)
-          }
-          else -> {
-            val result = when (baseResp.errCode) {
-              BaseResp.ErrCode.ERR_OK -> ShareResult(ShareResult.OK, activity.getString(R.string.action_share_success))
-              BaseResp.ErrCode.ERR_USER_CANCEL -> ShareResult(ShareResult.CANCEL, activity.getString(R.string.action_share_cancel))
-              else -> ShareResult(ShareResult.ERROR, baseResp.errStr + ",code:" + baseResp.errCode)
-            }
-            BusUtils.default.post(result)
-          }
+        val result = when (baseResp.errCode) {
+          BaseResp.ErrCode.ERR_OK -> ShareResult(ShareResult.OK, activity.getString(R.string.action_share_success))
+          BaseResp.ErrCode.ERR_USER_CANCEL -> ShareResult(ShareResult.CANCEL, activity.getString(R.string.action_share_cancel))
+          else -> ShareResult(ShareResult.ERROR, baseResp.errStr + ",code:" + baseResp.errCode)
         }
+        BusUtils.default.post(result)
       }
     })
   }
